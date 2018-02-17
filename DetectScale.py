@@ -68,8 +68,12 @@ while(True):
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2, 100, minRadius=10, maxRadius=45)
     if circles is None:
         print("No Circles!")
+        sc.putNumber('View', 0)
+        pass
+        
         
     else:
+        sc.putNumber('View', 1)
         circles = np.round(circles[0, :]).astype("int")
         for(x,y, r) in circles:
             cv2.circle(canvas, (x, y), r, (255, 255, 0), 4)
