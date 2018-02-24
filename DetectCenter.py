@@ -10,57 +10,30 @@ from time import sleep
 import threading
 
 
-#define the camera
+#define the camera and its properites
 
 cam = PiCamera()
 cam.resolution = (400, 400)
 cam.framerate = 15
 rawcap = PiRGBArray(cam, size=(400,400))
 
+#Let the camera warm up for a milisecond.
 sleep(0.1)
 
 
  
 # Webcamera no 0 is used to capture the frames
+#Define the IP address of the Robot and Initialize a connection with the server.
+#Set the defaults for the center of the cube the software will be detecting.
 cap = cv2.VideoCapture(0)
 ip = "10.46.82.2"
 sd = nt.getTable("SmartDashboard")
 sc = nt.getTable("Scale")
 s = nt.getTable("Switch")
+nt.initialize(server=ip)
 centerX = 320
 centerY = 225
 
-
-
-nt.initialize(server=ip)
-
-'''def detectScaleLights(scene):
-    parameters = cv2.SimpleBlobDetector_Params()
-    parameters.minThreshold = 0
-    parameters.maxThreshold = 255
-    parameters.filterByCircularity = False
-    parameters.filterByArea = True
-    parameters.minArea = 30
-    parameters.maxArea = 50    
-    parameters.filterByArea = False
-    parameters.filterByConvexity = False
-
-    parameters.filterByInertia = False
-    test = scene
-    
-    detector = cv2.SimpleBlobDetector_create(parameters)
-    #grayscale = cv2.cvtColor(test, cv2.COLOR_BGR2GRAY)
-    #cv2.imshow('Test', test)
-    
-    keypoints = detector.detect(test)
-    im_with_keypoints = cv2.drawKeypoints(test,keypoints, np.array([]), (0,255,0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    
-    
-    if keypoints != None:
-        sc.putNumber('View', 1)
-    else:
-        pass
-    return im_with_keypoints'''
 def valueChanged(table, key, value, isNew):
      print("valueChanged: key: '%s'; value: %s; isNew: %s" % (key,value, isNew))
 
@@ -81,11 +54,7 @@ def computeCenter(M):
         #print(x)
         #print(y)
         return(x,y)
-    
-        
-        '''x = 0
-        y = 0
-        return (x, y)'''
+   
         
 X = 0
 Y = 0
@@ -134,7 +103,7 @@ for frame in cam.capture_continuous(rawcap, format="bgr", use_video_port=True):
     else:
         pass
     
-    #center = (int(M["m10"] / x)), int(M["m01"] / x)
+ 
     center = computeCenter(M)
     
     cv2.circle(canvas, center, 2 ,(255,0,0), -1)
@@ -188,7 +157,7 @@ sc.putNumber('X', centerX)
 sc.putNumber('Y', centerY)
 s.putNumber('X', centerX)
 s.putNumber('Y', centerY)
-#detectScaleLights()
+
 '''Thread'''
 
 
